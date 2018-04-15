@@ -1,21 +1,35 @@
 import React, {Component} from 'react';
+import CounterStore from './Stores/CounterStore';
+import * as Actions from './Actions';
 
 class Counter extends Component {
-  constructor (props){
+  constructor (props) {
     super(props);
     this.onClickIncrementButton = this.onClickIncrementButton.bind(this);
     this.onClickDecrementButton = this.onClickDecrementButton.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.updateCount = this.updateCount.bind(this);
     this.state = {
-      count: this.props.initValue
+      count: CounterStore.getCounterValues()[this.props.caption],
     }
   }
+  shouldComponentUpdate (nxtprops,nxtState){
+    return (nxtprops.caption!==this.props.caption || nxtState.count!==this.state.count);
+  }
+  componentDidMount(){
+    CounterStore.addChangeListener(this.onChange);
+  }
+  componentWillUnmount (){
+    CounterStore.removeChangeListener(this.onChange);
+  }
   updateCount (isIncrement){
-    var preValue = this.state.count;
-    var newValue = isIncrement ? this.state.count+1: this.state.count-1;
+    let caption = this.props.caption;
+    isIncrement ? Actions.increment(caption) : Actions.decrement(caption);
+  }
+  onChange (){
     this.setState({
-      count: newValue
+      count: CounterStore.getCounterValues()[this.props.caption]
     });
-    this.props.onUpdate(newValue,preValue);
   }
   onClickIncrementButton (){//增加
     this.updateCount(true)
