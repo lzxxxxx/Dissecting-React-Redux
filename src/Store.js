@@ -1,10 +1,2 @@
-import {createStore, combineReducers} from 'redux';
-import {reducer as todoReducer} from './todos';
-import {reducer as filterReducer} from './filter';
-
-const reducer = combineReducers({
-  todos: todoReducer,
-  filter: filterReducer
-});
-
-export default createStore(reducer);
+import {createStore, combineReducers, applyMiddleware, compose} from 'redux';
+import thunkMiddleware from 'redux-thunk';
